@@ -4,7 +4,7 @@
 ### Easy
 - [ ] Password configs
 - [ ] User management/detection
-- [ ] UFW
+- [X] UFW
 - [ ] Sysctl
 - [ ] Crontab checker
 ### Medium
