@@ -3,7 +3,6 @@ sub check_UFW_installed {
 
     # gets information on ufw
     my @dpkg = `dpkg -s ufw`;
-    chomp @dpkg;
 
     # return 1 if ufw is installed, return -1 if not installed
     index( @dpkg[1], "installed" ) != -1 ? return (1) : return (-1);
