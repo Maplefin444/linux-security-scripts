@@ -25,6 +25,8 @@ sub get_UFW_rules {
     return @rules;
 }
 
+
+
 # checks for root permissions
 if ( $> != 0 ) {
     print "Run this as root!\n";
