@@ -1,5 +1,7 @@
 #!/usr/bin/perl
-sub check_Config_Exists {
+my $log_dir = "/linuxlogs";
+mkdir $log_dir unless -d $log_dir;
+sub check_config_exists {
     ( -e "/etc/login.defs" ) ? return (1) : return (-1);
 }
 
@@ -10,11 +12,11 @@ if ( $> != 0 ) {
 }
 
 # checks if login.defs exists
-die "/etc/login.defs doesn't exist!" if check_Config_Exists() == -1;
+die "/etc/login.defs doesn't exist!" if check_config_exists() == -1;
 
 # initialize file read and write
 open my $in,  "<", "/etc/login.defs"     or die "Can't open /etc/login.defs!";
-open my $out, ">", "/etc/login.defs.new" or die "Can't open /etc/login.defs!";
+open my $out, ">", "/etc/login.defs.new" or die "Can't write to /etc/login.defs.new!";
 while (<$in>) {
     $_ =~ s/\s+/ /;
     my @tokenized = split( /\s/, $_ );
@@ -55,9 +57,19 @@ while (<$in>) {
         print "SYSLOG_SU_ENAB is currently set to: @tokenized[1]\n";
         print $out "SYSLOG_SU_ENAB		yes\n";
     }
+    # uids
+    elsif ( index( $_, "UID_MIN" ) != -1 ) {
+        print "UID_MIN is currently set to: @tokenized[1]\n";
+        print $out "UID_MIN		1000\n";
+    }
+    elsif ( index( $_, "UID_MAX" ) != -1 ) {
+        print "UID_MAX is currently set to: @tokenized[1]\n";
+        print $out "UID_MAX		1000\n";
+    }
     else { print $out $_; }
 }
 close $out;
 
+`cp /etc/login.defs /linuxlogs/login.bak`;
 `rm /etc/login.defs`;
 rename "/etc/login.defs.new", "/etc/login.defs";

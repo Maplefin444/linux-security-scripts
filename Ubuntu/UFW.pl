@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-sub check_UFW_installed {
+sub check_ufw_installed {
 
     # gets information on ufw
     my @dpkg = `dpkg -s ufw`;
@@ -8,7 +8,7 @@ sub check_UFW_installed {
     index( @dpkg[1], "installed" ) != -1 ? return (1) : return (-1);
 }
 
-sub get_UFW_status {
+sub get_ufw_status {
     # get ufw status
     my @status = `ufw status`;
 
@@ -16,7 +16,7 @@ sub get_UFW_status {
     index( @status[0], "inactive" ) != -1 ? return (-1) : return (1);
 }
 
-sub get_UFW_rules {
+sub get_ufw_rules {
     # get ufw status
     my @rules = `ufw status`;
     # remove the first two lines, which only state if ufw is enabled
@@ -33,7 +33,7 @@ if ( $> != 0 ) {
     exit(0);
 }
 
-my $installed_state = check_UFW_installed();
+my $installed_state = check_ufw_installed();
 
 # if ufw is not installed, try installing
 if ( $installed_state == -1 ) {
@@ -43,12 +43,12 @@ if ( $installed_state == -1 ) {
     `apt-get install ufw -y`;
 
     # if ufw was unable to be installed, exit
-    die "Unable to install UFW..." if check_UFW_installed() == -1;
+    die "Unable to install UFW..." if check_ufw_installed() == -1;
 
     print "UFW successfully installed!\n\n";
 }
 
-my $active_status = get_UFW_status();
+my $active_status = get_ufw_status();
 # if ufw is inactive, try enabling
 if($active_status == -1){
     print "UFW is not enabled!\nEnabling UFW...\n";
@@ -56,12 +56,12 @@ if($active_status == -1){
     `ufw enable`;
 
     # if ufw was unable to be activated, exit
-    die "Unable to enable UFW..." if get_UFW_status() == -1;
+    die "Unable to enable UFW..." if get_ufw_status() == -1;
 
     print "UFW is now enabled!\n\n";
 }
 
-my @rules = get_UFW_rules();
+my @rules = get_ufw_rules();
 # if there are rules, print them
 if(scalar @rules > 0){
     print "Currently enabled rules:\n";

@@ -1,8 +1,8 @@
 # linux-security-scripts
-
+##These scripts are not affiliated with the CyberPatriot competition.
 ## To-do List
 ### Easy
-- [ ] Password configs
+- [X] Password configs
 - [ ] User management/detection
 - [X] UFW
 - [ ] Sysctl
