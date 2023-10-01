@@ -5,7 +5,7 @@
 - [X] Password configs
 - [ ] User management/detection
 - [X] UFW
-- [ ] Sysctl
+- [X] Sysctl
 - [ ] Crontab checker
 ### Medium
 - [ ] Suspicious file finder
