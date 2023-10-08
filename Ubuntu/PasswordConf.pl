@@ -4,14 +4,14 @@ mkdir $log_dir unless -d $log_dir;
 
 my $config_file    = "/etc/login.defs";
 my %configurations = (
-    PASS_MAX_DAYS          => "90",
-    PASS_MIN_DAYS          => "10",
-    PASS_WARN_AGE          => "7",
-    ENCRYPT_METHOD         => "sha512",
-    LOG_UNKFAIL_ENAB       => "no",
-    SYSLOG_SU_ENAB         => "yes",
-    UID_MIN                => "1000",
-    UID_MAX                => "60000",
+    PASS_MAX_DAYS    => "90",
+    PASS_MIN_DAYS    => "10",
+    PASS_WARN_AGE    => "7",
+    ENCRYPT_METHOD   => "sha512",
+    LOG_UNKFAIL_ENAB => "no",
+    SYSLOG_SU_ENAB   => "yes",
+    UID_MIN          => "1000",
+    UID_MAX          => "60000",
 );
 
 sub check_config_exists {
