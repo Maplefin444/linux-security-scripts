@@ -9,6 +9,7 @@ sub check_ufw_installed {
 }
 
 sub get_ufw_status {
+
     # get ufw status
     my @status = `ufw status`;
 
@@ -17,15 +18,16 @@ sub get_ufw_status {
 }
 
 sub get_ufw_rules {
+
     # get ufw status
     my @rules = `ufw status`;
+
     # remove the first two lines, which only state if ufw is enabled
     splice @rules, 0, 2;
+
     # return only the rules
     return @rules;
 }
-
-
 
 # checks for root permissions
 if ( $> != 0 ) {
@@ -49,8 +51,9 @@ if ( $installed_state == -1 ) {
 }
 
 my $active_status = get_ufw_status();
+
 # if ufw is inactive, try enabling
-if($active_status == -1){
+if ( $active_status == -1 ) {
     print "UFW is not enabled!\nEnabling UFW...\n";
 
     `ufw enable`;
@@ -62,10 +65,14 @@ if($active_status == -1){
 }
 
 my @rules = get_ufw_rules();
+
 # if there are rules, print them
-if(scalar @rules > 0){
+if ( scalar @rules > 0 ) {
     print "Currently enabled rules:\n";
     print @rules;
 }
+
 # otherwise, print that there are no rules, and show how to add rules
-else { print "There are no rules currently!\nAdd some rules using 'ufw allow'\n";}
+else {
+    print "There are no rules currently!\nAdd some rules using 'ufw allow'\n";
+}

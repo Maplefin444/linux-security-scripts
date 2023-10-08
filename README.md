@@ -6,7 +6,6 @@
 - [ ] User management/detection
 - [X] UFW
 - [X] Sysctl
-- [ ] Crontab checker
 ### Medium
 - [ ] Suspicious file finder
 - [ ] Display manager config
@@ -14,7 +13,7 @@
   - [ ] LightDM
 - [ ] NGINX config
 - [ ] Apache config
-- [ ] SSH config
+- [X] SSH config
 - [ ] PostgreSQL config
 - [ ] FTP config
 - [ ] SSH config

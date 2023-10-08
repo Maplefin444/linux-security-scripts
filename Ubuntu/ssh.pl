@@ -2,16 +2,22 @@
 my $log_dir = "/linuxlogs";
 mkdir $log_dir unless -d $log_dir;
 
-my $config_file    = "/etc/login.defs";
+my $config_file    = "/etc/ssh/sshd_config";
 my %configurations = (
-    PASS_MAX_DAYS          => "90",
-    PASS_MIN_DAYS          => "10",
-    PASS_WARN_AGE          => "7",
-    ENCRYPT_METHOD         => "sha512",
-    LOG_UNKFAIL_ENAB       => "no",
-    SYSLOG_SU_ENAB         => "yes",
-    UID_MIN                => "1000",
-    UID_MAX                => "60000",
+    LogLevel                => "VERBOSE",
+    PermitRootLogin         => "no",
+    StrictModes             => "yes",
+    RSAAuthentication       => "yes",
+    IgnoreRhosts            => "yes",
+    RhostsAuthentication    => "no",
+    RhostsRSAAuthentication => "no",
+    PermitEmptyPasswords    => "no",
+    PasswordAuthentication  => "no",
+    ClientAliveInterval     => "30",
+    ClientAliveCountMax     => "0",
+    AllowTcpForwarding      => "no",
+    X11Forwarding           => "no",
+    UseDNS                  => "no",
 );
 
 sub check_config_exists {
@@ -19,7 +25,7 @@ sub check_config_exists {
 }
 
 sub check_backup_exists {
-    ( -e "$log_dir/login.bak" ) ? return (1) : return (-1);
+    ( -e "$log_dir/ssh.bak" ) ? return (1) : return (-1);
 }
 
 # checks for root permissions
@@ -28,8 +34,8 @@ if ( $> != 0 ) {
     exit(0);
 }
 
-# checks if login.defs exists
-die "/etc/login.defs doesn't exist!" if check_config_exists() == -1;
+# checks if config file exists
+die "$config_file doesn't exist!" if check_config_exists() == -1;
 
 # checks if backup is present, and prompt user to be sure if they want to delete the backup
 if ( check_backup_exists() == 1 ) {
@@ -81,6 +87,7 @@ for ( keys %configurations ) {
 }
 close $out;
 
-`cp $config_file /linuxlogs/login.bak`;
+# create a backup, then replace config file with the new file
+`cp $config_file /linuxlogs/ssh.bak`;
 `rm $config_file`;
-rename "/etc/login.defs.new", "$config_file";
+rename "$config_file.new", "$config_file";
