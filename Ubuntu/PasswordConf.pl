@@ -47,6 +47,7 @@ open my $out, ">", "$config_file.new"
 
 OUTER:
 while (<$in>) {
+    # read in line, remove first whitespace, then split along whitespace
     my $line = $_;
     $line =~ s/\s+/ /;
     my @tokenized = split( /\s/, $line );
@@ -56,6 +57,7 @@ while (<$in>) {
         ;
     }
     else {
+        #iterate through every configuration, check if it matches current line
         for ( keys %configurations ) {
             if ( index( $line, $_ ) != -1 ) {
 
