@@ -1,5 +1,5 @@
 # linux-security-scripts
-##These scripts are not affiliated with the CyberPatriot competition.
+## These scripts are not affiliated with the CyberPatriot competition.
 ## To-do List
 ### Easy
 - [X] Password configs
