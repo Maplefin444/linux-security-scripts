@@ -53,6 +53,7 @@ open my $out, ">", "$config_file.new"
 
 OUTER:
 while (<$in>) {
+
     # read in line, remove first whitespace, then split along whitespace
     my $line = $_;
     $line =~ s/\s+/ /;

@@ -1,18 +1,8 @@
 #!/usr/bin/perl
+use FindBin;
 my $log_dir = "/linuxlogs";
-`mkdir $log_dir` unless -d $log_dir;
-
-# Returns a list of all users, along with UIDs
-sub get_all_users {
-    my @users = split /:[^:]*:[^:]*:[^:]*:[^:]*\n/, `getent passwd`;
-    return @users;
-}
-
-sub get_all_regusers {
-    my @users = split /:[^:]*:[^:]*:[^:]*:[^:]*\n/,
-      `getent passwd {1000..60000}`;
-    return @users;
-}
+mkdir $log_dir unless -d $log_dir;
+my $default_pass = "EpicGamer!123";
 
 # checks for root permissions
 if ( $> != 0 ) {
@@ -24,10 +14,65 @@ if ( $> != 0 ) {
 open my $log, ">", "/linuxlogs/users.txt"
   or die "Can't write to /linuxlogs/users.txt!";
 
-# Get all users, then print to log file
-my @users = get_all_users();
-foreach (@users) {
-    print $log "$_\n";
+# get user inputted file
+my $userfile = $ARGV[0];
+if ( not defined $userfile ) {
+    die
+"Please provide a file to read the users from. It must be in this directory.";
 }
 
+# get all users on the system
+while ( ( $name, $passwd, $uid, $gid, $quota, $comment, $gcos, $dir, $shell ) =
+    getpwent() )
+{
+    chomp $name;
+
+    # log user
+    print $log "$name       $uid\n";
+
+    # check they are a regular user
+    if ( $uid >= 1000 and $uid < 65534 ) {
+
+        # get user list
+        open my $list, "<", "$FindBin::Bin/$userfile"
+          or die "Can't find $FindBin::Bin/$userfile!";
+        my $good = 0;
+
+        # check if user is allowed
+        while (<$list>) {
+            chomp $_;
+            if ( $name eq $_ ) {
+                print "User $name has been located, and is allowed.\n";
+                $good = 1;
+                break;
+            }
+        }
+
+        # if user is disallowed, delete user
+        if ( $good == 0 ) {
+            print
+              "User $name has been located, and is NOT allowed, removing... \n";
+            `userdel $name`;
+        }
+        close $list;
+    }
+}
 close $log;
+
+# get list of users
+open my $list, "<", "$FindBin::Bin/$userfile"
+  or die "Can't find $FindBin::Bin/$userfile!";
+
+# iterate through list of users, and check if they exist
+while (<$list>) {
+    chomp $_;
+    my $uid = getpwnam($_);
+    if ( not defined $uid ) {
+
+        # add user if does not exist
+        print "User $_ was not found, but is required. Adding...\n";
+        `useradd -p $default_pass $_`;
+    }
+}
+close $list;
+
